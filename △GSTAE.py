@@ -82,8 +82,6 @@ l2y = tf.placeholder('float', [None, n_output])
 #第三个AE
 l3x = tf.placeholder('float', [None, n_h2])
 l3y = tf.placeholder('float', [None, n_output])
-#增强特征输入
-h3 = tf.placeholder('float', [None, n_h3])
 
 #输出层
 x = tf.placeholder('float', [None, n_input])
@@ -193,17 +191,7 @@ y1 = tf.nn.tanh(tf.matmul(h1, weights['w_h1']) + biases['b_h1'])
 y2 = tf.nn.tanh(tf.matmul(h2, weights['w_h2']) + biases['b_h2'])
 y3 = tf.nn.tanh(tf.matmul(h3, weights['w_h3']) + biases['b_h3'])
 y_pred = tf.multiply(g1, y1) + tf.multiply(g2, y2) + tf.multiply(g3, y3)
-#a = tf.nn.sigmoid(tf.matmul(h12, weights['w_a']) + biases['b_a'])
-#ha = tf.nn.tanh(tf.matmul(h12, weights['w_tanh1']) + biases['b_tanh1']) 
-#o = tf.nn.sigmoid(tf.matmul(h12, weights['w_o']) + biases['b_o'])
-#h = tf.multiply(f, h3) + tf.multiply(a, ha)
-#y_tanh = tf.nn.tanh(tf.matmul(h, weights['w_tanh2']) + biases['b_tanh2']) 
-#y_pred = tf.multiply(o, y_tanh)
 
-##h_drop = tf.nn.dropout(h_aug, keep_prob)
-##y_pred = tf.nn.tanh(tf.matmul(h_drop, weights['w_pred']) + biases['b_pred'])
-#y_pred = tf.nn.tanh(tf.matmul(h, weights['w_pred']) + biases['b_pred'])
-#y_pred = tf.nn.tanh(tf.matmul(x, weights['w_output']) + biases['b_output'])
 pred_loss = predicted_loss(y, y_pred)
 tf.add_to_collection('cost_final', pred_loss)
 cost_final = tf.add_n(tf.get_collection('cost_final'))
@@ -303,13 +291,10 @@ with tf.Session() as sess:
           % (h3_train.shape[0], h3_train.shape[1], h3_test.shape[0], h3_test.shape[1]))
     ###########################################################################
     print('门控输出...')
-#    h12_train = np.concatenate((h1_train, h2_train), axis=1)  
-#    h12_valid_test = np.concatenate((h1_test, h2_test), axis=1) 
-#    h_train = h3_train
-#    h_valid_test = h3_test
+
     x_valid, x_test, y_valid, y_test = train_test_split(x_tst_scaled, y_test, \
                                                         test_size = 0.5, random_state = 42)
-       #    print('原始特征维度：%d，新的特征维度：%d' % (n_input, h_train.shape[1]))
+
     print('开始训练输出模型...')
     train_rmse = []
     valid_rmse = []
@@ -321,14 +306,12 @@ with tf.Session() as sess:
         for i in range(num_batch):            
             batch_x = x_trn_scaled[batch_index[i*batch_size:min((i+1)*batch_size,\
                                                        len(batch_index))]]
-#            batch_h12 = h12_train[batch_index[i*batch_size:min((i+1)*batch_size,\
-#                                                       len(batch_index))]]
+
             batch_y = y_train[batch_index[i*batch_size:min((i+1)*batch_size,\
                                                             len(batch_index))]]
             train_feed = {x: batch_x,  y: batch_y}            
             valid_feed = {x: x_valid,  y: y_valid}
-#            train_feed = {x: batch_x, y: batch_y, keep_prob: 0.95}            
-#            valid_feed = {x: h_valid, y: y_valid, keep_prob: 1.0}
+
             sess.run(opti_final, feed_dict = train_feed)
             total_rmse_trn += sess.run(pred_loss, feed_dict = train_feed)
             total_rmse_vld += sess.run(pred_loss, feed_dict = valid_feed)        
