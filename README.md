@@ -1,9 +1,9 @@
 # GSTAE
-因相关保密协议，原始论文中的真实工厂数据不能对外公开，故自己生成随机非线性数据进行代码的运行。
-包含4个文件：
-1、《数值例子数据生成》：通过正态分布和随机组合生成13个自变量，并通过非线性变换和组合得到y；
-2、《data.csv》：生成好的仿真数据；
-3、《GSTAE》：主要代码文件，和《data.csv》在同一目录下时可直接运行，其中网络结构视数据而定；
-4、《record》：结果文件保存。
+Due to the relevant confidentiality agreement, the real factory data in the original paper cannot be disclosed to the public, so I generate random nonlinear data to run the code.
+There are four files:
+1、《Data generator.py》: Thirteen independent variables are randomly generated or combined, and y was obtained by nonlinear mapping from those variables;
+2、《data.csv》: The data file which has been generated from 《Data generator》;
+3、《GSTAE.py》：Main code file，can be run directly if《data.csv》is in the same file path;
+4、《record》：Save the resullts。
 
-△：本代码的运行环境为python 3.6.3，tensorflow 1.2.0，win 10-8G-64bit。
+△：The running environment of this code is: python 3.6.3，tensorflow 1.2.0，win 10-8G-64bit. The result may be slightly diffenrent in different environment, which is normal.
